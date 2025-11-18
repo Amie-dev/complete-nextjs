@@ -247,13 +247,3 @@ export default function Home() {
   );
 }
 ```
-
----
-
-# ✅ If you want, I can also include:
-
-✔ Git commit message for these topics
-✔ 20 interview questions on navigation + images + fonts
-✔ Full Next.js notes PDF
-
-Just tell me!

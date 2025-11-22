@@ -1,4 +1,3 @@
----
 
 # ✅ **1. Why do we need Next.js? (Simple Explanation)**
 

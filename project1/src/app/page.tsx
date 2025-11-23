@@ -1,10 +1,14 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { CgProfile } from "react-icons/cg";
 
 function Page() {
   const { data: session } = useSession();
+  // console.log(session)
+  const router=useRouter()
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
@@ -18,15 +22,17 @@ function Page() {
               alt="Profile"
               className="w-24 h-24 rounded-full mx-auto mb-4 border border-amber-50"
             /> */}
-           {session?.user?.image && (
-  <Image
-    src={session.user.image}
-    alt="Profile"
-    width={96}
-    height={96}
-    className="rounded-full mx-auto mb-4 border border-amber-50"
-  />
-)}
+            {session?.user?.image ? (
+                         <Image
+                           src={session?.user?.image}
+                           alt="Profile"
+                           width={96}
+                           height={96}
+                           className="w-24 h-24 rounded-full mx-auto mb-4 border border-amber-50"
+                         />
+                       ) : (
+                         <CgProfile className="w-24 h-24 mx-auto" />
+                       )}
 
 
             {/* Name */}
@@ -38,7 +44,7 @@ function Page() {
             <p className="text-sm mb-4">{session.user.email}</p>
 
             {/* Edit button */}
-            <button className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition mr-2">
+            <button className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition mr-2" onClick={()=>router.push("/edit")}>
               Edit Profile
             </button>
 

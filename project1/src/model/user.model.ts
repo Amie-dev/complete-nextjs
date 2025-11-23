@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 interface Iuser{
     _id?:mongoose.Types.ObjectId;
     name?:string;
-    password:string;
+    password?:string;
     email:string;
     image?:string;
     createdAt?:Date;
@@ -30,7 +30,7 @@ const userSchema=new mongoose.Schema<Iuser>({
     },
     password:{
         type:String,
-        required:true
+        // required:true
     }
 },
 {

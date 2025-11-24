@@ -107,7 +107,7 @@ export const authOptions: NextAuthOptions = {
     // 📦 Session callback: runs whenever a session is checked/created
     async session({ session, token }) {
       if (token) {
-        session.user._id = token._id; // Attach MongoDB ID to session
+        session.user._id = token._id as string; // Attach MongoDB ID to session
         session.user.name = token.name!;
         session.user.email = token.email!;
         session.user.image = token?.image as string;

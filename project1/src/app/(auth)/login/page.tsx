@@ -105,26 +105,18 @@ function Page() {
          onClick={async () => {
   try {
     const response = await new Promise(async (resolve) => {
-      const res = await signIn("google", {
+      const result = await signIn("google", {
         callbackUrl: "/",
         redirect: false,
       });
-      resolve(res);
+      resolve(result);
     });
-
-    if (response?.error) {
-      toast.error(response.error);
-      return;
-    }else{
-          toast.success("Signup through Google");
-
-    }
+   
+    
 
     toast.success("Signup through Google");
 
-    setTimeout(() => {
-      window.location.href = response?.url || "/";
-    }, 1500);
+   
   } catch (err: any) {
     toast.error(err?.message || "Unexpected error");
   }

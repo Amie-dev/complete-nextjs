@@ -19,7 +19,7 @@ declare global {
 declare module "next-auth" {
   interface Session {
     user: {
-      _id: string; // ✅ Custom field: MongoDB user ID
+      _id: string ; // ✅ Custom field: MongoDB user ID
     } & DefaultSession["user"]; // Merge with default NextAuth user fields (name, email, image)
   }
   interface User {

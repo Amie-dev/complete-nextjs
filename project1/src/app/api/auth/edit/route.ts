@@ -6,7 +6,7 @@ import {cloudinary} from "@/lib/cloudinary";
 import connectDb from "@/lib/db";
 
 export async function PATCH(request: NextRequest) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const token  = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,7 +18,7 @@ export async function PATCH(request: NextRequest) {
   const imageFile = formData.get("image") as File | null;
  console.log(token)
   try {
-    const existingUser = await User.findById(new mongoose.Types.ObjectId(token._id));
+    const existingUser = await User.findById(new mongoose.Types.ObjectId(token._id as string));
     if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

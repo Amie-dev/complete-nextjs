@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
 
     console.log("🆔 Looking up user by ID:", token._id);
-    const user = await User.findById(new mongoose.Types.ObjectId(token._id)).select("-password");
+    const user = await User.findById(new mongoose.Types.ObjectId(token._id as string)).select("-password");
 
     if (!user) {
       console.warn("❌ User not found in DB");

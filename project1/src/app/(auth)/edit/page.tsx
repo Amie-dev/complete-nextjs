@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { userDataContext } from "@/context/UserContext";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -9,50 +9,55 @@ import { CgProfile } from "react-icons/cg";
 import { toast } from "react-toastify";
 
 function Page() {
-  const { data } = useSession();
+  const  session  = useSession();
+  const data1 = useContext(userDataContext);
+  const router = useRouter();
 
-const data1=useContext(userDataContext)
-  console.log(data1?.user?.image)
-  const [name, setName] = useState(data?.user?.name || "");
-  const [image, setImage] = useState(data?.user?.image || "");
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(data1?.user?.name || "");
+  const [image, setImage] = useState(data1?.user?.image || "");
   const [backendImage, setBackendImage] = useState<File | null>(null);
-  const [email, setEmail] = useState(data?.user?.email || "");
-  const router=useRouter()
+  const [email, setEmail] = useState(data1?.user?.email || "");
+
   useEffect(() => {
-    if (data) {
-      setName(data.user.name as string);
-      setEmail(data.user.email as string);
-      setImage(data.user.image as string);
+    const user = data1?.user ;
+    if (user) {
+      setName(user.name || "");
+      setEmail(user.email || "");
+      setImage(user.image || "");
     }
-  }, [data]);
+  }, [session,data1]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("email", email);
       if (backendImage) {
-        formData.append("image", backendImage); // actual file
+        formData.append("image", backendImage);
       }
 
       const response = await axios.patch("/api/auth/edit", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-     
-      console.log("Saved:", response.data);
-      toast.success(response?.data?.message || "succed"
 
-        
-)
- router.push("/")
-    } catch (error) {
-        toast.error(error.message || "failed"
-)
+      toast.success(response?.data?.message || "Profile updated successfully");
+      router.push("/");
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.statusText ||
+        error.message ||
+        "Failed to save";
+      toast.error(message);
       console.error("Error saving user:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,7 +70,6 @@ const data1=useContext(userDataContext)
     if (file) {
       setBackendImage(file);
 
-      // Preview locally
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
@@ -77,7 +81,7 @@ const data1=useContext(userDataContext)
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md border border-amber-50 rounded-2xl p-8 shadow-lg bg-gray-900 text-amber-50">
-        <h1 className="text-3xl font-bold text-center mb-6">Edit</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Edit Profile</h1>
 
         <form className="space-y-4" onSubmit={handleSave}>
           <div
@@ -97,7 +101,6 @@ const data1=useContext(userDataContext)
             )}
           </div>
 
-          {/* hidden file input */}
           <input
             type="file"
             accept="image/*"
@@ -106,10 +109,12 @@ const data1=useContext(userDataContext)
             onChange={handleFileChange}
           />
 
-          {/* Name field */}
           <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Name</label>
+            <label htmlFor="name" className="mb-1 text-sm font-medium">
+              Name
+            </label>
             <input
+              id="name"
               type="text"
               className="px-3 py-2 rounded-lg border border-amber-50 bg-gray-800 text-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
               placeholder="Enter your name"
@@ -118,10 +123,12 @@ const data1=useContext(userDataContext)
             />
           </div>
 
-          {/* Email field */}
           <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Email</label>
+            <label htmlFor="email" className="mb-1 text-sm font-medium">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               className="px-3 py-2 rounded-lg border border-amber-50 bg-gray-800 text-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-400"
               placeholder="Enter your email"
@@ -130,19 +137,26 @@ const data1=useContext(userDataContext)
             />
           </div>
 
-          {/* Save button */}
           <button
             type="submit"
-            className="w-full py-2 px-4 rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
+            disabled={loading}
+            className={`w-full py-2 px-4 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-amber-300
+              ${
+                loading
+                  ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                  : "bg-amber-500 text-black hover:bg-amber-400"
+              }`}
           >
-            Save
+            {loading  ? "Saving..." : "Save"}
           </button>
-          
         </form>
-        <button className="w-full mt-1 py-2 px-4 rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
-           onClick={()=>router.back()}>
-            Back
-          </button>
+
+        <button
+          className="w-full mt-1 py-2 px-4 rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          onClick={() => router.back()}
+        >
+          Back
+        </button>
       </div>
     </div>
   );

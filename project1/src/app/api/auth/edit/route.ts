@@ -2,7 +2,8 @@ import User from "@/model/user.model";
 import mongoose from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import {cloudinary} from "@/lib/cloudinary";
+import connectDb from "@/lib/db";
 
 export async function PATCH(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -10,7 +11,7 @@ export async function PATCH(request: NextRequest) {
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
+  await connectDb()
   const formData = await request.formData();
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;

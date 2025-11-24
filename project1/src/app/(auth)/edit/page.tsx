@@ -1,15 +1,18 @@
 "use client"
+import { userDataContext } from "@/context/UserContext";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { CgProfile } from "react-icons/cg";
 import { toast } from "react-toastify";
 
 function Page() {
   const { data } = useSession();
 
+const data1=useContext(userDataContext)
+  console.log(data1?.user?.image)
   const [name, setName] = useState(data?.user?.name || "");
   const [image, setImage] = useState(data?.user?.image || "");
   const [backendImage, setBackendImage] = useState<File | null>(null);
